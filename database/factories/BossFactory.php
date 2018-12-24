@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User\Boss;
 use App\Models\User\User;
 use Faker\Generator as Faker;
 
@@ -14,9 +15,8 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
+$factory->define(Boss::class, function (Faker $faker) {
     return [
-        'email' => $faker->unique()->safeEmail,
-        'password' => bcrypt('password'),
+        'boss_id' => rand(1, User::count())
     ];
 });

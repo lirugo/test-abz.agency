@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User\User;
+use App\Models\User\WorkPosition;
 use Faker\Generator as Faker;
 
 /*
@@ -14,9 +14,8 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
+$factory->define(WorkPosition::class, function (Faker $faker) {
     return [
-        'email' => $faker->unique()->safeEmail,
-        'password' => bcrypt('password'),
+        'position_id' => rand(1, count(config('workposition')))
     ];
 });

@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User\User;
+use App\Models\User\Salary;
 use Faker\Generator as Faker;
 
 /*
@@ -14,9 +14,9 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
+$factory->define(Salary::class, function (Faker $faker) {
     return [
-        'email' => $faker->unique()->safeEmail,
-        'password' => bcrypt('password'),
+        'salary' => mt_rand(ceil(1000/100) , floor(20000/100))*100,
+        'currency' => 'USD'
     ];
 });

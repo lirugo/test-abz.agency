@@ -15,7 +15,7 @@ class CreateWorkPositionsTable extends Migration
     {
         Schema::create('work_positions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('display_name');
             $table->timestamps();
         });

@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User\User;
+use App\Models\User\LastName;
 use Faker\Generator as Faker;
 
 /*
@@ -14,9 +14,9 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
+$factory->define(LastName::class, function (Faker $faker) {
     return [
-        'email' => $faker->unique()->safeEmail,
-        'password' => bcrypt('password'),
+        'title' => $faker->lastName,
+        'language' => 'en'
     ];
 });
