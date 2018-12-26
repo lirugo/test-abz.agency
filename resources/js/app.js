@@ -1,6 +1,9 @@
 
 require('./bootstrap');
 
+//Material design icon
+import '@mdi/font/css/materialdesignicons.css'
+
 //Vue
 import Vue from 'vue'
 
@@ -8,8 +11,11 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 Vue.use(Vuetify);
 
+//Vuetify styles
+import 'vuetify/dist/vuetify.min.css'
 
-const app = new Vue({
+
+new Vue({
     el: '#app',
     data:{
         data:'tex'
