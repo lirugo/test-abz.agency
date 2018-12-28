@@ -15,8 +15,8 @@ class CreateEmployeeSalariesTable extends Migration
     {
         Schema::create('employee_salaries', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('staff_position_id')->unsigned();
-            $table->foreign('staff_position_id')->references('id')->on('employee_staff_positions')->onDelete('cascade');
+            $table->integer('position_id')->unsigned();
+            $table->foreign('position_id')->references('id')->on('employee_staff_positions')->onDelete('cascade');
             $table->integer('department_id')->unsigned();
             $table->foreign('department_id')->references('id')->on('geo_departments')->onDelete('cascade');
             $table->integer('salary');

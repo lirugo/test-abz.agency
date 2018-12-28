@@ -15,10 +15,12 @@ class CreateEmployeesTable extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('boss_id')->unsigned();
+            $table->integer('boss_id')->unsigned()->nullable();
             $table->string('email')->unique();
             $table->integer('salary')->default(0);
             $table->date('employment_date');
+            // gender - m or f from config file
+            $table->char('gender', 1)->default(config('gender')[0]);
             $table->timestamps();
         });
     }

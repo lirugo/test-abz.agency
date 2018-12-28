@@ -18,11 +18,11 @@ class CreateGeoDepartmentsTable extends Migration
             $table->integer('city_id')->unsigned();
             $table->foreign('city_id')->references('id')->on('geo_cities')->onDelete('cascade');
             $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('slug');
         });
 
         Schema::table('employees', function (Blueprint $table) {
-            $table->integer('department_id')->unsigned();
+            $table->integer('department_id')->unsigned()->after('id');
             $table->foreign('department_id')->references('id')->on('geo_departments');
         });
     }

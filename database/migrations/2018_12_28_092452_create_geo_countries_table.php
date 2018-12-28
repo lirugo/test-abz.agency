@@ -15,8 +15,8 @@ class CreateGeoCountriesTable extends Migration
     {
         Schema::create('geo_countries', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('macro_regions_id')->unsigned();
-            $table->foreign('macro_regions_id')->references('id')->on('geo_macro_regions')->onDelete('cascade');
+            $table->integer('macro_region_id')->unsigned();
+            $table->foreign('macro_region_id')->references('id')->on('geo_macro_regions')->onDelete('cascade');
             $table->string('name');
             $table->string('slug')->unique();
         });

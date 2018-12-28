@@ -20,10 +20,12 @@ class CreateEmployeeStaffPositionsTable extends Migration
         });
 
         Schema::create('employee_has_staff_positions', function (Blueprint $table) {
-            $table->integer('staff_position_id')->unsigned();
-            $table->foreign('staff_position_id')->references('id')->on('employee_staff_positions')->onDelete('cascade');
+            $table->integer('position_id')->unsigned();
+            $table->foreign('position_id')->references('id')->on('employee_staff_positions')->onDelete('cascade');
             $table->integer('employee_id')->unsigned();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
+
+            $table->primary(['position_id', 'employee_id']);
         });
     }
 
