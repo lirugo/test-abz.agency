@@ -16,17 +16,18 @@ class EmployeeSeeder extends Seeder
      */
     public function run()
     {
-        $NUMBER_EMPLOYEES = env('NUMBER_EMPLOYEES_SEEDER', 50000);
+        $NUMBER_EMPLOYEES = (integer) env('NUMBER_EMPLOYEES_SEEDER', 50000);
 
         //Employee
-        factory(Employee::class, 10)->create()->each(function ($employee) {
+        factory(Employee::class, $NUMBER_EMPLOYEES)->create()->each(function ($employee) {
             //Set boss
             $employee->boss_id = rand(1, Employee::count());
             $employee->save();
+            //Generate name
+            $employee->name()->save(factory(Name::class)->create([
+                'employee_id' => $employee,
+            ]));
         });
-
-        //Generate name
-        factory(Name::class, 10)->create();
 
         //Add staff position
         for($i = 1; $i <= Employee::count(); $i++)
