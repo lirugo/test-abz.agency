@@ -1,7 +1,9 @@
 
 require('./bootstrap');
 
-//Material design icon
+//Material icons
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
+//Material design icons
 import '@mdi/font/css/materialdesignicons.css'
 
 //Vue
@@ -14,10 +16,13 @@ Vue.use(Vuetify);
 //Vuetify styles
 import 'vuetify/dist/vuetify.min.css'
 
+//Imports
+import WidgetEmployee from './components/employee/Employee'
 
+//Main
 new Vue({
     el: '#app',
-    data:{
-        data:'tex'
+    components: {
+        WidgetEmployee
     }
 });

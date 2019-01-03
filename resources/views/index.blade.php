@@ -3,8 +3,7 @@
 @section('content')
     <v-layout>
         <v-flex xs12>
-            <h1>Vue && Vuetify!</h1>
-            <v-btn color="info">button</v-btn>
+            <widget-employee></widget-employee>
         </v-flex>
     </v-layout>
 @endsection
