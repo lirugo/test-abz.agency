@@ -1972,6 +1972,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
 var avatars = ['?accessoriesType=Blank&avatarStyle=Circle&clotheColor=PastelGreen&clotheType=ShirtScoopNeck&eyeType=Wink&eyebrowType=UnibrowNatural&facialHairColor=Black&facialHairType=MoustacheMagnum&hairColor=Platinum&mouthType=Concerned&skinColor=Tanned&topType=Turban', '?accessoriesType=Sunglasses&avatarStyle=Circle&clotheColor=Gray02&clotheType=ShirtScoopNeck&eyeType=EyeRoll&eyebrowType=RaisedExcited&facialHairColor=Red&facialHairType=BeardMagestic&hairColor=Red&hatColor=White&mouthType=Twinkle&skinColor=DarkBrown&topType=LongHairBun', '?accessoriesType=Prescription02&avatarStyle=Circle&clotheColor=Black&clotheType=ShirtVNeck&eyeType=Surprised&eyebrowType=Angry&facialHairColor=Blonde&facialHairType=Blank&hairColor=Blonde&hatColor=PastelOrange&mouthType=Smile&skinColor=Black&topType=LongHairNotTooLong', '?accessoriesType=Round&avatarStyle=Circle&clotheColor=PastelOrange&clotheType=Overall&eyeType=Close&eyebrowType=AngryNatural&facialHairColor=Blonde&facialHairType=Blank&graphicType=Pizza&hairColor=Black&hatColor=PastelBlue&mouthType=Serious&skinColor=Light&topType=LongHairBigHair', '?accessoriesType=Kurt&avatarStyle=Circle&clotheColor=Gray01&clotheType=BlazerShirt&eyeType=Surprised&eyebrowType=Default&facialHairColor=Red&facialHairType=Blank&graphicType=Selena&hairColor=Red&hatColor=Blue02&mouthType=Twinkle&skinColor=Pale&topType=LongHairCurly'];
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2009,8 +2015,10 @@ var avatars = ['?accessoriesType=Blank&avatarStyle=Circle&clotheColor=PastelGree
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                return _context.abrupt("return", fetch('https://jsonplaceholder.typicode.com/users').then(function (res) {
+                return _context.abrupt("return", fetch('/api/employees').then(function (res) {
                   return res.json();
+                }).then(function (json) {
+                  return json.data;
                 }).then(function (json) {
                   var _item$children;
 
@@ -21326,7 +21334,13 @@ var render = function() {
                                   staticClass:
                                     "blue--text subheading font-weight-bold"
                                 },
-                                [_vm._v(_vm._s(_vm.selected.username))]
+                                [
+                                  _vm._v(
+                                    _vm._s(_vm.selected.department) +
+                                      " - " +
+                                      _vm._s(_vm.selected.city)
+                                  )
+                                ]
                               )
                             ],
                             1
@@ -21355,11 +21369,11 @@ var render = function() {
                                     "mb-2": ""
                                   }
                                 },
-                                [_vm._v("Company:")]
+                                [_vm._v("Salary:")]
                               ),
                               _vm._v(" "),
                               _c("v-flex", [
-                                _vm._v(_vm._s(_vm.selected.company.name))
+                                _vm._v(_vm._s(_vm.selected.salary) + " $")
                               ]),
                               _vm._v(" "),
                               _c(
@@ -21373,20 +21387,11 @@ var render = function() {
                                     "mb-2": ""
                                   }
                                 },
-                                [_vm._v("Website:")]
+                                [_vm._v("Employment Date:")]
                               ),
                               _vm._v(" "),
                               _c("v-flex", [
-                                _c(
-                                  "a",
-                                  {
-                                    attrs: {
-                                      href: "//" + _vm.selected.website,
-                                      target: "_blank"
-                                    }
-                                  },
-                                  [_vm._v(_vm._s(_vm.selected.website))]
-                                )
+                                _vm._v(_vm._s(_vm.selected.employment_date))
                               ]),
                               _vm._v(" "),
                               _c(
@@ -21400,10 +21405,20 @@ var render = function() {
                                     "mb-2": ""
                                   }
                                 },
-                                [_vm._v("Phone:")]
+                                [_vm._v("Staff positions:")]
                               ),
                               _vm._v(" "),
-                              _c("v-flex", [_vm._v(_vm._s(_vm.selected.phone))])
+                              _c(
+                                "v-flex",
+                                _vm._l(_vm.selected.staff_positions, function(
+                                  staffPosition
+                                ) {
+                                  return _c("span", [
+                                    _vm._v(_vm._s(staffPosition) + " ")
+                                  ])
+                                }),
+                                0
+                              )
                             ],
                             1
                           )

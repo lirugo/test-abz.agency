@@ -55,11 +55,14 @@
                                         class="mb-4"
                                 ></v-img>
                             </v-avatar>
+                            <!--Name-->
                             <h3 class="headline mb-2">
                                 {{ selected.name }}
                             </h3>
+                            <!--Email-->
                             <div class="blue--text mb-2">{{ selected.email }}</div>
-                            <div class="blue--text subheading font-weight-bold">{{ selected.username }}</div>
+                            <!--Department|city-->
+                            <div class="blue--text subheading font-weight-bold">{{ selected.department }} - {{ selected.city}}</div>
                         </v-card-text>
                         <v-divider></v-divider>
                         <v-layout
@@ -67,14 +70,17 @@
                                 text-xs-left
                                 wrap
                         >
-                            <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Company:</v-flex>
-                            <v-flex>{{ selected.company.name }}</v-flex>
-                            <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Website:</v-flex>
+                            <!--Salary-->
+                            <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Salary:</v-flex>
+                            <v-flex>{{ selected.salary }} $</v-flex>
+                            <!--Employment Date-->
+                            <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Employment Date:</v-flex>
+                            <v-flex>{{ selected.employment_date }}</v-flex>
+                            <!--Staff positions-->
+                            <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Staff positions:</v-flex>
                             <v-flex>
-                                <a :href="`//${selected.website}`" target="_blank">{{ selected.website }}</a>
+                                <span v-for="staffPosition in selected.staff_positions">{{ staffPosition }} </span>
                             </v-flex>
-                            <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Phone:</v-flex>
-                            <v-flex>{{ selected.phone }}</v-flex>
                         </v-layout>
                     </v-card>
                 </v-scroll-y-transition>
@@ -119,9 +125,10 @@
         },
         methods: {
             async fetchUsers (item) {
-                return fetch('https://jsonplaceholder.typicode.com/users')
+                return fetch('/api/employees')
                     .then(res => res.json())
-                    .then(json => (item.children.push(...json)))
+                    .then(json => json.data)
+                    .then(json => item.children.push(...json))
                     .catch(err => console.warn(err))
             },
             randomAvatar () {
