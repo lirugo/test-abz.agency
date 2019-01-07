@@ -81,6 +81,11 @@
                             <v-flex>
                                 <span v-for="staffPosition in selected.staff_positions">{{ staffPosition }} </span>
                             </v-flex>
+                            <!--Boss-->
+                            <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Boss:</v-flex>
+                            <v-flex>
+                                {{ boss.name }}
+                            </v-flex>
                         </v-layout>
                     </v-card>
                 </v-scroll-y-transition>
@@ -103,7 +108,9 @@
             active: [],
             avatar: null,
             open: [],
-            users: []
+            users: [],
+            //TODO:: recheck it i not sure it best option
+            boss: '',
         }),
         computed: {
             items () {
@@ -117,7 +124,13 @@
             selected () {
                 if (!this.active.length) return undefined
                 const id = this.active[0]
-                return this.users.find(user => user.id === id)
+                let selected = this.users.find(user => user.id === id)
+                fetch('/api/employees/' + selected.boss_id)
+                    .then(res => res.json())
+                    .then(json => json.data)
+                    .then(json => this.boss = json)
+                    .catch(err => console.warn(err))
+                return selected
             }
         },
         watch: {

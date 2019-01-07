@@ -23,7 +23,7 @@ class EmployeeResource extends JsonResource
           'salary' => $this->getTotalSalary(),
           'employment_date' => $this->employment_date,
           'staff_positions' => $this->arrayStaffPositions(),
-          'boss' => url('/api/employees/'.$this->boss_id),
+          'boss_id' => $this->boss_id,
         ];
     }
 }
