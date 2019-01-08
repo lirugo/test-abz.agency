@@ -11,6 +11,13 @@ return [
                         'name' => 'Kiev',
                         'departments' => [
                             'dep_b' => 'Dep B',
+                            'dep_c' => 'Dep C',
+                        ]
+                    ],
+                    'lviv' => [
+                        'name' => 'Lviv',
+                        'departments' => [
+                            'dep_b' => 'Dep B',
                         ]
                     ],
                 ]
