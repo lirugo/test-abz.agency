@@ -16,7 +16,7 @@ class MacroRegionResource extends JsonResource
     {
         return [
             'name' => $this->name,
-            'countries' => CountryResource::collection($this->country)
+            'children' => CountryResource::collection($this->country)
         ];
     }
 }

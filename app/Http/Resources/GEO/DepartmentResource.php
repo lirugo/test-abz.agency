@@ -17,7 +17,7 @@ class DepartmentResource extends JsonResource
     {
         return [
             'name' => $this->name,
-            'employees' => new EmployeeCollection($this->employees)
+            'children' => new EmployeeCollection($this->employees)
         ];
     }
 }

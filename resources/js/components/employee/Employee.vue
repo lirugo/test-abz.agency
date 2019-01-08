@@ -7,7 +7,7 @@
                 justify-space-between
                 pa-3
         >
-            <v-flex xs5>
+            <v-flex xs4>
                 <v-treeview
                         :active.sync="active"
                         :items="items"
@@ -43,7 +43,7 @@
                             :key="selected.id"
                             class="pt-4 mx-auto"
                             flat
-                            max-width="400"
+                            max-width="450"
                     >
                         <v-card-text>
                             <v-avatar
@@ -103,12 +103,26 @@
         '?accessoriesType=Kurt&avatarStyle=Circle&clotheColor=Gray01&clotheType=BlazerShirt&eyeType=Surprised&eyebrowType=Default&facialHairColor=Red&facialHairType=Blank&graphicType=Selena&hairColor=Red&hatColor=Blue02&mouthType=Twinkle&skinColor=Pale&topType=LongHairCurly'
     ]
 
+    function findById(tree, id){
+        if(tree.id == id){
+            return tree;
+        }else if (tree.children != null){
+            let j;
+            let result = null;
+            for(j=0; result == null && j < tree.children.length; j++){
+                result = findById(tree.children[j], id);
+            }
+            return result;
+        }
+        return null;
+    }
+
     export default {
         data: () => ({
             active: [],
             avatar: null,
             open: [],
-            users: [],
+            macroRegions: [],
             //TODO:: recheck it i not sure it best option
             boss: '',
         }),
@@ -116,18 +130,26 @@
             items () {
                 return [
                     {
-                        name: 'Employees',
-                        children: this.users
+                        name: 'Macro regions',
+                        children: this.macroRegions
                     }
                 ]
             },
             selected () {
                 if (!this.active.length) return undefined
-                const id = this.active[0]
-                let selected = this.users.find(user => user.id === id)
+                let employeeId = this.active[0]
+                let selected, result, i;
+
+                //Find employee inside tree
+                for(i=0; i<this.macroRegions.length; i++) {
+                    result = findById(this.macroRegions[i], employeeId)
+                    if (result)
+                        selected = result
+                }
+
+                // Add boss data
                 fetch('/api/employees/' + selected.boss_id)
                     .then(res => res.json())
-                    .then(json => json.data)
                     .then(json => this.boss = json)
                     .catch(err => console.warn(err))
                 return selected
@@ -140,7 +162,6 @@
             async fetchUsers (item) {
                 return fetch('/api/employees')
                     .then(res => res.json())
-                    .then(json => json.data)
                     .then(json => item.children.push(...json))
                     .catch(err => console.warn(err))
             },

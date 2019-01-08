@@ -16,7 +16,7 @@ class CityResource extends JsonResource
     {
         return [
             'name' => $this->name,
-            'departments' => DepartmentResource::collection($this->department),
+            'children' => DepartmentResource::collection($this->department),
         ];
     }
 }

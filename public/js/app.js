@@ -1984,13 +1984,31 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 var avatars = ['?accessoriesType=Blank&avatarStyle=Circle&clotheColor=PastelGreen&clotheType=ShirtScoopNeck&eyeType=Wink&eyebrowType=UnibrowNatural&facialHairColor=Black&facialHairType=MoustacheMagnum&hairColor=Platinum&mouthType=Concerned&skinColor=Tanned&topType=Turban', '?accessoriesType=Sunglasses&avatarStyle=Circle&clotheColor=Gray02&clotheType=ShirtScoopNeck&eyeType=EyeRoll&eyebrowType=RaisedExcited&facialHairColor=Red&facialHairType=BeardMagestic&hairColor=Red&hatColor=White&mouthType=Twinkle&skinColor=DarkBrown&topType=LongHairBun', '?accessoriesType=Prescription02&avatarStyle=Circle&clotheColor=Black&clotheType=ShirtVNeck&eyeType=Surprised&eyebrowType=Angry&facialHairColor=Blonde&facialHairType=Blank&hairColor=Blonde&hatColor=PastelOrange&mouthType=Smile&skinColor=Black&topType=LongHairNotTooLong', '?accessoriesType=Round&avatarStyle=Circle&clotheColor=PastelOrange&clotheType=Overall&eyeType=Close&eyebrowType=AngryNatural&facialHairColor=Blonde&facialHairType=Blank&graphicType=Pizza&hairColor=Black&hatColor=PastelBlue&mouthType=Serious&skinColor=Light&topType=LongHairBigHair', '?accessoriesType=Kurt&avatarStyle=Circle&clotheColor=Gray01&clotheType=BlazerShirt&eyeType=Surprised&eyebrowType=Default&facialHairColor=Red&facialHairType=Blank&graphicType=Selena&hairColor=Red&hatColor=Blue02&mouthType=Twinkle&skinColor=Pale&topType=LongHairCurly'];
+
+function findById(tree, id) {
+  if (tree.id == id) {
+    return tree;
+  } else if (tree.children != null) {
+    var j;
+    var result = null;
+
+    for (j = 0; result == null && j < tree.children.length; j++) {
+      result = findById(tree.children[j], id);
+    }
+
+    return result;
+  }
+
+  return null;
+}
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       active: [],
       avatar: null,
       open: [],
-      users: [],
+      macroRegions: [],
       //TODO:: recheck it i not sure it best option
       boss: ''
     };
@@ -1998,22 +2016,25 @@ var avatars = ['?accessoriesType=Blank&avatarStyle=Circle&clotheColor=PastelGree
   computed: {
     items: function items() {
       return [{
-        name: 'Employees',
-        children: this.users
+        name: 'Macro regions',
+        children: this.macroRegions
       }];
     },
     selected: function selected() {
       var _this = this;
 
       if (!this.active.length) return undefined;
-      var id = this.active[0];
-      var selected = this.users.find(function (user) {
-        return user.id === id;
-      });
+      var employeeId = this.active[0];
+      var selected, result, i; //Find employee inside tree
+
+      for (i = 0; i < this.macroRegions.length; i++) {
+        result = findById(this.macroRegions[i], employeeId);
+        if (result) selected = result;
+      } // Add boss data
+
+
       fetch('/api/employees/' + selected.boss_id).then(function (res) {
         return res.json();
-      }).then(function (json) {
-        return json.data;
       }).then(function (json) {
         return _this.boss = json;
       }).catch(function (err) {
@@ -2036,8 +2057,6 @@ var avatars = ['?accessoriesType=Blank&avatarStyle=Circle&clotheColor=PastelGree
               case 0:
                 return _context.abrupt("return", fetch('/api/employees').then(function (res) {
                   return res.json();
-                }).then(function (json) {
-                  return json.data;
                 }).then(function (json) {
                   var _item$children;
 
@@ -21243,7 +21262,7 @@ var render = function() {
         [
           _c(
             "v-flex",
-            { attrs: { xs5: "" } },
+            { attrs: { xs4: "" } },
             [
               _c("v-treeview", {
                 attrs: {
@@ -21312,7 +21331,7 @@ var render = function() {
                         {
                           key: _vm.selected.id,
                           staticClass: "pt-4 mx-auto",
-                          attrs: { flat: "", "max-width": "400" }
+                          attrs: { flat: "", "max-width": "450" }
                         },
                         [
                           _c(
