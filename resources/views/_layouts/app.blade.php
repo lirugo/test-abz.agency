@@ -24,9 +24,7 @@
         @include('_includes.nav.toolbar')
 
         <!-- Content -->
-        <v-container fluid>
-            @yield('content')
-        </v-container>
+        @yield('content')
     </v-app>
 
     <!-- Default Scripts -->

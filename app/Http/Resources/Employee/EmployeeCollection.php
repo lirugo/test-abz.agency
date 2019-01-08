@@ -16,11 +16,4 @@ class EmployeeCollection extends ResourceCollection
     {
         return EmployeeResource::collection($this->collection);
     }
-
-    public function with($request)
-    {
-        return [
-            'version' => '0.0.1',
-        ];
-    }
 }

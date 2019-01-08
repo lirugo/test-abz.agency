@@ -1,97 +1,103 @@
 <template>
-    <v-card>
-        <v-card-title class="grey lighten-3 headline">
-            Employees Directory
-        </v-card-title>
-        <v-layout
-                justify-space-between
-                pa-3
-        >
-            <v-flex xs4>
-                <v-treeview
-                        :active.sync="active"
-                        :items="items"
-                        :load-children="fetchUsers"
-                        :open.sync="open"
-                        activatable
-                        active-class="primary--text"
-                        open-on-click
-                        transition
-                >
-                    <v-icon
-                            v-if="!item.children"
-                            slot="prepend"
-                            slot-scope="{ item, active }"
-                            :color="active ? 'primary' : ''"
-                    >mdi-account</v-icon>
-                </v-treeview>
-            </v-flex>
-            <v-flex
-                    d-flex
-                    text-xs-center
-            >
-                <v-scroll-y-transition mode="out-in">
-                    <div
-                            v-if="!selected"
-                            class="title grey--text text--lighten-1 font-weight-light"
-                            style="align-self: center;"
+    <v-container fluid>
+        <v-layout>
+            <v-flex xs12>
+                <v-card>
+                    <v-card-title class="grey lighten-3 headline">
+                        Employees Directory
+                    </v-card-title>
+                    <v-layout
+                            justify-space-between
+                            pa-3
                     >
-                        Select a Employee
-                    </div>
-                    <v-card
-                            v-else
-                            :key="selected.id"
-                            class="pt-4 mx-auto"
-                            flat
-                            max-width="450"
-                    >
-                        <v-card-text>
-                            <v-avatar
-                                    v-if="avatar"
-                                    size="88"
+                        <v-flex xs4>
+                            <v-treeview
+                                    :active.sync="active"
+                                    :items="items"
+                                    :load-children="fetchEmployees"
+                                    :open.sync="open"
+                                    activatable
+                                    active-class="primary--text"
+                                    open-on-click
+                                    transition
                             >
-                                <v-img
-                                        :src="`https://avataaars.io/${avatar}`"
-                                        class="mb-4"
-                                ></v-img>
-                            </v-avatar>
-                            <!--Name-->
-                            <h3 class="headline mb-2">
-                                {{ selected.name }}
-                            </h3>
-                            <!--Email-->
-                            <div class="blue--text mb-2">{{ selected.email }}</div>
-                            <!--Department|city-->
-                            <div class="blue--text subheading font-weight-bold">{{ selected.department }} - {{ selected.city}}</div>
-                        </v-card-text>
-                        <v-divider></v-divider>
-                        <v-layout
-                                tag="v-card-text"
-                                text-xs-left
-                                wrap
+                                <v-icon
+                                        v-if="!item.children"
+                                        slot="prepend"
+                                        slot-scope="{ item, active }"
+                                        :color="active ? 'primary' : ''"
+                                >mdi-account</v-icon>
+                            </v-treeview>
+                        </v-flex>
+                        <v-flex
+                                d-flex
+                                text-xs-center
                         >
-                            <!--Salary-->
-                            <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Salary:</v-flex>
-                            <v-flex>{{ selected.salary }} $</v-flex>
-                            <!--Employment Date-->
-                            <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Employment Date:</v-flex>
-                            <v-flex>{{ selected.employment_date }}</v-flex>
-                            <!--Staff positions-->
-                            <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Staff positions:</v-flex>
-                            <v-flex>
-                                <span v-for="staffPosition in selected.staff_positions">{{ staffPosition }} </span>
-                            </v-flex>
-                            <!--Boss-->
-                            <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Boss:</v-flex>
-                            <v-flex>
-                                {{ boss.name }}
-                            </v-flex>
-                        </v-layout>
-                    </v-card>
-                </v-scroll-y-transition>
+                            <v-scroll-y-transition mode="out-in">
+                                <div
+                                        v-if="!selected"
+                                        class="title grey--text text--lighten-1 font-weight-light"
+                                        style="align-self: center;"
+                                >
+                                    Select a Employee
+                                </div>
+                                <v-card
+                                        v-else
+                                        :key="selected.id"
+                                        class="pt-4 mx-auto"
+                                        flat
+                                        max-width="450"
+                                >
+                                    <v-card-text>
+                                        <v-avatar
+                                                v-if="avatar"
+                                                size="88"
+                                        >
+                                            <v-img
+                                                    :src="`https://avataaars.io/${avatar}`"
+                                                    class="mb-4"
+                                            ></v-img>
+                                        </v-avatar>
+                                        <!--Name-->
+                                        <h3 class="headline mb-2">
+                                            {{ selected.name }}
+                                        </h3>
+                                        <!--Email-->
+                                        <div class="blue--text mb-2">{{ selected.email }}</div>
+                                        <!--Department|city-->
+                                        <div class="blue--text subheading font-weight-bold">{{ selected.department }} - {{ selected.city}}</div>
+                                    </v-card-text>
+                                    <v-divider></v-divider>
+                                    <v-layout
+                                            tag="v-card-text"
+                                            text-xs-left
+                                            wrap
+                                    >
+                                        <!--Salary-->
+                                        <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Salary:</v-flex>
+                                        <v-flex>{{ selected.salary }} $</v-flex>
+                                        <!--Employment Date-->
+                                        <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Employment Date:</v-flex>
+                                        <v-flex>{{ selected.employment_date }}</v-flex>
+                                        <!--Staff positions-->
+                                        <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Staff positions:</v-flex>
+                                        <v-flex>
+                                            <span v-for="staffPosition in selected.staff_positions">{{ staffPosition }} </span>
+                                        </v-flex>
+                                        <!--Boss-->
+                                        <v-flex tag="strong" xs5 text-xs-right mr-3 mb-2>Boss:</v-flex>
+                                        <v-flex>
+                                            {{ boss.name }}
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card>
+                            </v-scroll-y-transition>
+                        </v-flex>
+                    </v-layout>
+                </v-card>
             </v-flex>
         </v-layout>
-    </v-card>
+    </v-container>
 </template>
 
 <script>
@@ -159,9 +165,10 @@
             selected: 'randomAvatar'
         },
         methods: {
-            async fetchUsers (item) {
-                return fetch('/api/employees')
+            async fetchEmployees (item) {
+                return fetch('/api/employees?sort=catalog')
                     .then(res => res.json())
+                    .then(res => res.data)
                     .then(json => item.children.push(...json))
                     .catch(err => console.warn(err))
             },
