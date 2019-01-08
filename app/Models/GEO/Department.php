@@ -2,6 +2,7 @@
 
 namespace App\Models\GEO;
 
+use App\Models\Employee\Employee;
 use Illuminate\Database\Eloquent\Model;
 
 class Department extends Model
@@ -10,5 +11,9 @@ class Department extends Model
 
     public function city(){
         return $this->belongsTo(City::class);
+    }
+
+    public function employees(){
+        return $this->hasMany(Employee::class, 'department_id');
     }
 }
