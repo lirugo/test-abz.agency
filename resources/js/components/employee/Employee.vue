@@ -156,6 +156,7 @@
                 // Add boss data
                 fetch('/api/employees/' + selected.boss_id)
                     .then(res => res.json())
+                    .then(json => json.data)
                     .then(json => this.boss = json)
                     .catch(err => console.warn(err))
                 return selected

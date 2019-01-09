@@ -2042,6 +2042,8 @@ function findById(tree, id) {
       fetch('/api/employees/' + selected.boss_id).then(function (res) {
         return res.json();
       }).then(function (json) {
+        return json.data;
+      }).then(function (json) {
         return _this.boss = json;
       }).catch(function (err) {
         return console.warn(err);
@@ -2112,6 +2114,7 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+//
 //
 //
 //
@@ -21739,7 +21742,7 @@ var render = function() {
             "v-flex",
             [
               _c("v-pagination", {
-                attrs: { length: _vm.pagination.last },
+                attrs: { length: _vm.pagination.last, "total-visible": "10" },
                 model: {
                   value: _vm.pagination.current,
                   callback: function($$v) {

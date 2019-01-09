@@ -7,7 +7,8 @@
             <v-flex>
                 <v-pagination
                         v-model="pagination.current"
-                        :length="pagination.last"/>
+                        :length="pagination.last"
+                        total-visible="10"/>
             </v-flex>
         </v-layout>
         <!--Employee list-->
