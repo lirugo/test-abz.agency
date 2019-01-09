@@ -1,11 +1,13 @@
 <template>
     <v-container fluid grid-list-md>
-        <v-layout>
+        <!--Loader-->
+        <loader :loader="loader"></loader>
         <!--Pagination-->
+        <v-layout>
             <v-flex>
                 <v-pagination
-                    v-model="pagination.current"
-                    :length="pagination.last"/>
+                        v-model="pagination.current"
+                        :length="pagination.last"/>
             </v-flex>
         </v-layout>
         <!--Employee list-->
@@ -46,6 +48,7 @@
     export default {
         data(){
             return {
+                loader: true,
                 pagination: {
                     current: 1,
                     last: 1
@@ -66,6 +69,7 @@
         },
         methods: {
             fetchEmployees(){
+                this.loader = true
                 fetch('/api/employees?page=' + this.pagination.current)
                     .then(res => res.json())
                     .then(res => {
@@ -75,6 +79,9 @@
                         this.employees = []
                         this.employees.push(...res.data)
                     })
+                    .finally(() => (
+                        this.loader = false
+                    ))
                     .catch(err => console.warn(err))
             }
         }

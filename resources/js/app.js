@@ -23,6 +23,8 @@ import 'vuetify/dist/vuetify.min.css'
 //Imports components
 import WidgetEmployee from './components/employee/Employee'
 import WidgetEmployeeList from './components/employee/List'
+//Partials
+Vue.component('loader', require('./components/partials/Loader.vue').default);
 
 //Routes
 const routes = [
