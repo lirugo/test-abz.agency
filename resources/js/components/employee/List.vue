@@ -3,17 +3,25 @@
         <!--Loader-->
         <loader :loader="loader"></loader>
         <!--Pagination-->
-        <v-layout>
-            <v-flex>
+        <v-layout row wrap>
+            <v-flex xs12 sm6>
                 <v-pagination
+                        class="pt-3"
                         v-model="pagination.current"
                         :length="pagination.last"
                         total-visible="10"/>
             </v-flex>
+            <v-flex xs12 sm3 offset-sm3>
+                <v-text-field
+                        v-model="search"
+                        label="Search"
+                        append-outer-icon="search"
+                ></v-text-field>
+            </v-flex>
         </v-layout>
         <!--Employee list-->
         <v-layout row wrap>
-            <v-flex xs12 sm6 md4 lg3 xl2  v-for="employee in employees" :key="employee.id">
+            <v-flex xs12 sm6 md4 lg3 xl2  v-for="employee in filteredEmployees" :key="employee.id">
                 <!--Employee card-->
                 <v-hover>
                     <v-card
@@ -54,6 +62,7 @@
                     current: 1,
                     last: 1
                 },
+                search: '',
                 employees: [],
             }
         },
@@ -67,6 +76,13 @@
                 },
                 deep: true
             },
+        },
+        computed: {
+            filteredEmployees(){
+                return this.employees.filter((employee) => {
+                    return employee.name.match(this.search)
+                })
+            }
         },
         methods: {
             fetchEmployees(){
@@ -85,6 +101,6 @@
                     ))
                     .catch(err => console.warn(err))
             }
-        }
+        },
     }
 </script>

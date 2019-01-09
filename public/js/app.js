@@ -2161,6 +2161,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2169,6 +2177,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         current: 1,
         last: 1
       },
+      search: '',
       employees: []
     };
   },
@@ -2183,24 +2192,33 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       deep: true
     }
   },
+  computed: {
+    filteredEmployees: function filteredEmployees() {
+      var _this = this;
+
+      return this.employees.filter(function (employee) {
+        return employee.name.match(_this.search);
+      });
+    }
+  },
   methods: {
     fetchEmployees: function fetchEmployees() {
-      var _this = this;
+      var _this2 = this;
 
       this.loader = true;
       fetch('/api/employees?page=' + this.pagination.current).then(function (res) {
         return res.json();
       }).then(function (res) {
-        var _this$employees;
+        var _this2$employees;
 
-        _this.pagination.current = res.meta.current_page;
-        _this.pagination.last = res.meta.last_page; //Clear current employees
+        _this2.pagination.current = res.meta.current_page;
+        _this2.pagination.last = res.meta.last_page; //Clear current employees
 
-        _this.employees = [];
+        _this2.employees = [];
 
-        (_this$employees = _this.employees).push.apply(_this$employees, _toConsumableArray(res.data));
+        (_this2$employees = _this2.employees).push.apply(_this2$employees, _toConsumableArray(res.data));
       }).finally(function () {
-        return _this.loader = false;
+        return _this2.loader = false;
       }).catch(function (err) {
         return console.warn(err);
       });
@@ -21737,11 +21755,14 @@ var render = function() {
       _vm._v(" "),
       _c(
         "v-layout",
+        { attrs: { row: "", wrap: "" } },
         [
           _c(
             "v-flex",
+            { attrs: { xs12: "", sm6: "" } },
             [
               _c("v-pagination", {
+                staticClass: "pt-3",
                 attrs: { length: _vm.pagination.last, "total-visible": "10" },
                 model: {
                   value: _vm.pagination.current,
@@ -21749,6 +21770,24 @@ var render = function() {
                     _vm.$set(_vm.pagination, "current", $$v)
                   },
                   expression: "pagination.current"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-flex",
+            { attrs: { xs12: "", sm3: "", "offset-sm3": "" } },
+            [
+              _c("v-text-field", {
+                attrs: { label: "Search", "append-outer-icon": "search" },
+                model: {
+                  value: _vm.search,
+                  callback: function($$v) {
+                    _vm.search = $$v
+                  },
+                  expression: "search"
                 }
               })
             ],
@@ -21761,7 +21800,7 @@ var render = function() {
       _c(
         "v-layout",
         { attrs: { row: "", wrap: "" } },
-        _vm._l(_vm.employees, function(employee) {
+        _vm._l(_vm.filteredEmployees, function(employee) {
           return _c(
             "v-flex",
             {
