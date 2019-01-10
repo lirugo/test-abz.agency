@@ -39,4 +39,17 @@ class EmployeeController extends Controller
     public function show(Employee $employee){
         return new EmployeeResource($employee);
     }
+
+    public function search(){
+        //Get search key
+        $key = Input::get('key');
+        //Get page size
+        if(!is_null(Input::get('page_size')))
+            $pageSize = Input::get('page_size');
+        else $pageSize = 10;
+        //Search from Algolia
+        $employees = Employee::search($key)->paginate($pageSize);
+        //Return result
+        return new EmployeeCollection($employees);
+    }
 }

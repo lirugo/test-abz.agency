@@ -2183,6 +2183,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2190,6 +2192,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       pagination: {
         current: 1,
         last: 1,
+        total: 0,
         pageSize: 10,
         pageSizes: [5, 10, 20, 50, 100]
       },
@@ -2203,42 +2206,64 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   watch: {
     pagination: {
       handler: function handler() {
-        this.fetchEmployees();
+        //TODO:: check it
+        if (this.search.length == 0) this.fetchEmployees();else this.searchMethod();
       },
       deep: true
-    }
-  },
-  computed: {
-    filteredEmployees: function filteredEmployees() {
-      var _this = this;
-
-      return this.employees.filter(function (employee) {
-        return employee.name.match(_this.search);
-      });
-    }
+    },
+    search: 'searchMethod'
   },
   methods: {
     fetchEmployees: function fetchEmployees() {
-      var _this2 = this;
+      var _this = this;
 
       this.loader = true;
       fetch('/api/employees?page_size=' + this.pagination.pageSize + '&page=' + this.pagination.current).then(function (res) {
         return res.json();
       }).then(function (res) {
-        var _this2$employees;
+        var _this$employees;
 
-        _this2.pagination.current = res.meta.current_page;
-        _this2.pagination.last = res.meta.last_page; //Clear current employees
+        _this.pagination.current = res.meta.current_page;
+        _this.pagination.last = res.meta.last_page;
+        _this.pagination.total = res.meta.total; //Clear current employees
 
-        _this2.employees = [];
+        _this.employees = [];
 
-        (_this2$employees = _this2.employees).push.apply(_this2$employees, _toConsumableArray(res.data));
+        (_this$employees = _this.employees).push.apply(_this$employees, _toConsumableArray(res.data));
       }).finally(function () {
-        return _this2.loader = false;
+        return _this.loader = false;
       }).catch(function (err) {
         return console.warn(err);
       });
-    }
+    },
+    searchMethod: _.debounce(function () {
+      var _this2 = this;
+
+      if (this.search.length > 2) {
+        console.log('send');
+        this.loader = true;
+        fetch('/api/employees/search?key=' + this.search + '&page_size=' + this.pagination.pageSize + '&page=' + this.pagination.current).then(function (res) {
+          return res.json();
+        }).then(function (res) {
+          var _this2$employees;
+
+          _this2.pagination.current = res.meta.current_page;
+          _this2.pagination.last = res.meta.last_page;
+          _this2.pagination.total = res.meta.total; //Get search result
+
+          _this2.employees = [];
+
+          (_this2$employees = _this2.employees).push.apply(_this2$employees, _toConsumableArray(res.data)); //Set back focus on search input
+
+
+          _this2.$refs.search.focus();
+        }).finally(function () {
+          return _this2.loader = false;
+        }).catch(function (err) {
+          return console.warn(err);
+        });
+      }
+    }, 600)
   }
 });
 
@@ -21775,7 +21800,7 @@ var render = function() {
         [
           _c(
             "v-flex",
-            { attrs: { xs12: "", sm12: "", md6: "" } },
+            { attrs: { xs12: "", sm12: "", md6: "", "fill-height": "" } },
             [
               _c("v-pagination", {
                 staticClass: "pt-3",
@@ -21787,7 +21812,11 @@ var render = function() {
                   },
                   expression: "pagination.current"
                 }
-              })
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "caption grey--text ml-2" }, [
+                _vm._v(_vm._s(_vm.pagination.total) + " records")
+              ])
             ],
             1
           ),
@@ -21823,8 +21852,9 @@ var render = function() {
             { attrs: { xs12: "", sm6: "", md3: "" } },
             [
               _c("v-text-field", {
+                ref: "search",
                 attrs: {
-                  label: "Search",
+                  label: "Search Algolia",
                   "append-outer-icon": "search",
                   hint: "Start typing...",
                   "persistent-hint": ""
@@ -21847,7 +21877,7 @@ var render = function() {
       _c(
         "v-layout",
         { attrs: { row: "", wrap: "" } },
-        _vm._l(_vm.filteredEmployees, function(employee) {
+        _vm._l(_vm.employees, function(employee) {
           return _c(
             "v-flex",
             {
@@ -21907,7 +21937,7 @@ var render = function() {
                                         _vm._v("Employment Date:")
                                       ]),
                                       _vm._v(
-                                        " " + _vm._s(employee.employement_date)
+                                        " " + _vm._s(employee.employment_date)
                                       )
                                     ]),
                                     _vm._v(" "),
@@ -58795,21 +58825,24 @@ module.exports = function(module) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var material_design_icons_iconfont_dist_material_design_icons_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! material-design-icons-iconfont/dist/material-design-icons.css */ "./node_modules/material-design-icons-iconfont/dist/material-design-icons.css");
-/* harmony import */ var material_design_icons_iconfont_dist_material_design_icons_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(material_design_icons_iconfont_dist_material_design_icons_css__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _mdi_font_css_materialdesignicons_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @mdi/font/css/materialdesignicons.css */ "./node_modules/@mdi/font/css/materialdesignicons.css");
-/* harmony import */ var _mdi_font_css_materialdesignicons_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_mdi_font_css_materialdesignicons_css__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
-/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
-/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuetify/dist/vuetify.min.css */ "./node_modules/vuetify/dist/vuetify.min.css");
-/* harmony import */ var vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _components_employee_Employee__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/employee/Employee */ "./resources/js/components/employee/Employee.vue");
-/* harmony import */ var _components_employee_List__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/employee/List */ "./resources/js/components/employee/List.vue");
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); //Material icons
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var material_design_icons_iconfont_dist_material_design_icons_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! material-design-icons-iconfont/dist/material-design-icons.css */ "./node_modules/material-design-icons-iconfont/dist/material-design-icons.css");
+/* harmony import */ var material_design_icons_iconfont_dist_material_design_icons_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(material_design_icons_iconfont_dist_material_design_icons_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _mdi_font_css_materialdesignicons_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mdi/font/css/materialdesignicons.css */ "./node_modules/@mdi/font/css/materialdesignicons.css");
+/* harmony import */ var _mdi_font_css_materialdesignicons_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_mdi_font_css_materialdesignicons_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
+/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vuetify/dist/vuetify.min.css */ "./node_modules/vuetify/dist/vuetify.min.css");
+/* harmony import */ var vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _components_employee_Employee__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/employee/Employee */ "./resources/js/components/employee/Employee.vue");
+/* harmony import */ var _components_employee_List__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/employee/List */ "./resources/js/components/employee/List.vue");
+__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
+ //Material icons
 
  //Material design icons
 
@@ -58818,35 +58851,35 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); //Materia
  //VueRouter
 
 
-vue__WEBPACK_IMPORTED_MODULE_2___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]); //Vuetify
+vue__WEBPACK_IMPORTED_MODULE_3___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_4__["default"]); //Vuetify
 
 
-vue__WEBPACK_IMPORTED_MODULE_2___default.a.use(vuetify__WEBPACK_IMPORTED_MODULE_4___default.a); //Vuetify styles
+vue__WEBPACK_IMPORTED_MODULE_3___default.a.use(vuetify__WEBPACK_IMPORTED_MODULE_5___default.a); //Vuetify styles
 
  //Imports components
 
 
  //Partials
 
-vue__WEBPACK_IMPORTED_MODULE_2___default.a.component('loader', __webpack_require__(/*! ./components/partials/Loader.vue */ "./resources/js/components/partials/Loader.vue").default); //Routes
+vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('loader', __webpack_require__(/*! ./components/partials/Loader.vue */ "./resources/js/components/partials/Loader.vue").default); //Routes
 
 var routes = [//Employees
 {
   path: '/list',
-  component: _components_employee_List__WEBPACK_IMPORTED_MODULE_7__["default"]
+  component: _components_employee_List__WEBPACK_IMPORTED_MODULE_8__["default"]
 }, {
   path: '/catalog',
-  component: _components_employee_Employee__WEBPACK_IMPORTED_MODULE_6__["default"]
+  component: _components_employee_Employee__WEBPACK_IMPORTED_MODULE_7__["default"]
 }];
-var router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
+var router = new vue_router__WEBPACK_IMPORTED_MODULE_4__["default"]({
   routes: routes
 }); //Main
 
-new vue__WEBPACK_IMPORTED_MODULE_2___default.a({
+new vue__WEBPACK_IMPORTED_MODULE_3___default.a({
   el: '#app',
   components: {
-    WidgetEmployee: _components_employee_Employee__WEBPACK_IMPORTED_MODULE_6__["default"],
-    WidgetEmployeeList: _components_employee_List__WEBPACK_IMPORTED_MODULE_7__["default"]
+    WidgetEmployee: _components_employee_Employee__WEBPACK_IMPORTED_MODULE_7__["default"],
+    WidgetEmployeeList: _components_employee_List__WEBPACK_IMPORTED_MODULE_8__["default"]
   },
   router: router
 }).$mount('#app');

@@ -1,5 +1,7 @@
 
-require('./bootstrap');
+require('./bootstrap')
+
+import _ from 'lodash'
 
 //Material icons
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
