@@ -2169,13 +2169,29 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       loader: true,
       pagination: {
         current: 1,
-        last: 1
+        last: 1,
+        pageSize: 10,
+        pageSizes: [5, 10, 20, 50, 100]
       },
       search: '',
       employees: []
@@ -2206,7 +2222,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       var _this2 = this;
 
       this.loader = true;
-      fetch('/api/employees?page=' + this.pagination.current).then(function (res) {
+      fetch('/api/employees?page_size=' + this.pagination.pageSize + '&page=' + this.pagination.current).then(function (res) {
         return res.json();
       }).then(function (res) {
         var _this2$employees;
@@ -21759,7 +21775,7 @@ var render = function() {
         [
           _c(
             "v-flex",
-            { attrs: { xs12: "", sm6: "" } },
+            { attrs: { xs12: "", sm12: "", md6: "" } },
             [
               _c("v-pagination", {
                 staticClass: "pt-3",
@@ -21778,10 +21794,41 @@ var render = function() {
           _vm._v(" "),
           _c(
             "v-flex",
-            { attrs: { xs12: "", sm3: "", "offset-sm3": "" } },
+            { attrs: { xs12: "", sm6: "", md2: "", "offset-md1": "" } },
+            [
+              _c("v-select", {
+                attrs: {
+                  items: _vm.pagination.pageSizes,
+                  "menu-props": "auto",
+                  label: "Page size",
+                  "prepend-icon": "pages",
+                  hint: "Pick page size",
+                  "persistent-hint": "",
+                  "single-line": ""
+                },
+                model: {
+                  value: _vm.pagination.pageSize,
+                  callback: function($$v) {
+                    _vm.$set(_vm.pagination, "pageSize", $$v)
+                  },
+                  expression: "pagination.pageSize"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-flex",
+            { attrs: { xs12: "", sm6: "", md3: "" } },
             [
               _c("v-text-field", {
-                attrs: { label: "Search", "append-outer-icon": "search" },
+                attrs: {
+                  label: "Search",
+                  "append-outer-icon": "search",
+                  hint: "Start typing...",
+                  "persistent-hint": ""
+                },
                 model: {
                   value: _vm.search,
                   callback: function($$v) {

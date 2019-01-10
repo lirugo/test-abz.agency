@@ -4,18 +4,32 @@
         <loader :loader="loader"></loader>
         <!--Pagination-->
         <v-layout row wrap>
-            <v-flex xs12 sm6>
+            <v-flex xs12 sm12 md6>
                 <v-pagination
                         class="pt-3"
                         v-model="pagination.current"
                         :length="pagination.last"
                         total-visible="10"/>
             </v-flex>
-            <v-flex xs12 sm3 offset-sm3>
+            <v-flex xs12 sm6 md2 offset-md1>
+                <v-select
+                        :items="pagination.pageSizes"
+                        v-model="pagination.pageSize"
+                        menu-props="auto"
+                        label="Page size"
+                        prepend-icon="pages"
+                        hint="Pick page size"
+                        persistent-hint
+                        single-line
+                ></v-select>
+            </v-flex>
+            <v-flex xs12 sm6 md3>
                 <v-text-field
                         v-model="search"
                         label="Search"
                         append-outer-icon="search"
+                        hint="Start typing..."
+                        persistent-hint
                 ></v-text-field>
             </v-flex>
         </v-layout>
@@ -60,7 +74,9 @@
                 loader: true,
                 pagination: {
                     current: 1,
-                    last: 1
+                    last: 1,
+                    pageSize: 10,
+                    pageSizes: [5,10,20,50,100],
                 },
                 search: '',
                 employees: [],
@@ -87,7 +103,7 @@
         methods: {
             fetchEmployees(){
                 this.loader = true
-                fetch('/api/employees?page=' + this.pagination.current)
+                fetch('/api/employees?page_size=' + this.pagination.pageSize + '&page=' + this.pagination.current)
                     .then(res => res.json())
                     .then(res => {
                         this.pagination.current = res.meta.current_page
