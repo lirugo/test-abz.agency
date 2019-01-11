@@ -14,42 +14,19 @@ class EmployeeController extends Controller
 {
     public function employees(){
         //Get sort params
-        $sort = Input::get('sort');
-        $type = Input::get('type');
-        //Get page size
-        if(!is_null(Input::get('page_size')))
-            $pageSize = Input::get('page_size');
-        else $pageSize = 10;
+        $pageSize = Input::get('rowsPerPage');
 
-        //Sorting
-        if($sort == 'catalog')
-            if($type == 'desc')
-                $employees = MacroRegionResource::collection(MacroRegion::orderByDesc('id')->paginate($pageSize));
-            else
-                $employees = MacroRegionResource::collection(MacroRegion::orderBy('id')->paginate($pageSize));
-        else
-            if($type == 'desc')
-                $employees = new EmployeeCollection(Employee::orderByDesc('id')->paginate($pageSize));
-            else
-                $employees = new EmployeeCollection(Employee::orderBy('id')->paginate($pageSize));
+        $employees = new EmployeeCollection(Employee::orderBy('id')->paginate($pageSize));
 
         return $employees;
     }
 
-    public function show(Employee $employee){
-        return new EmployeeResource($employee);
+    public function catalog(){
+        $macroRegions = MacroRegionResource::collection(MacroRegion::orderBy('id')->get());
+        return $macroRegions;
     }
 
-    public function search(){
-        //Get search key
-        $key = Input::get('key');
-        //Get page size
-        if(!is_null(Input::get('page_size')))
-            $pageSize = Input::get('page_size');
-        else $pageSize = 10;
-        //Search from Algolia
-        $employees = Employee::search($key)->paginate($pageSize);
-        //Return result
-        return new EmployeeCollection($employees);
+    public function show(Employee $employee){
+        return new EmployeeResource($employee);
     }
 }

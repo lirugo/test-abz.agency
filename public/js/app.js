@@ -2063,7 +2063,7 @@ function findById(tree, id) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                return _context.abrupt("return", fetch('/api/employees?sort=catalog').then(function (res) {
+                return _context.abrupt("return", fetch('/api/employees/catalog').then(function (res) {
                   return res.json();
                 }).then(function (res) {
                   return res.data;
@@ -2106,44 +2106,6 @@ function findById(tree, id) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -2188,16 +2150,44 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      loader: true,
+      loading: true,
       pagination: {
-        current: 1,
-        last: 1,
-        total: 0,
-        pageSize: 10,
-        pageSizes: [5, 10, 20, 50, 100]
+        descending: false,
+        page: 1,
+        lastPage: 1,
+        rowsPerPage: 10,
+        rowsPerPageItems: [5, 10, 20],
+        sortBy: '',
+        totalItems: 0
       },
-      search: '',
-      employees: []
+      employees: [],
+      headers: [{
+        text: 'Name',
+        align: 'left',
+        sortable: false,
+        value: 'name'
+      }, {
+        text: 'Department',
+        value: 'department'
+      }, {
+        text: 'City',
+        value: 'city'
+      }, {
+        text: 'Email',
+        value: 'email'
+      }, {
+        text: 'Salary',
+        value: 'salary'
+      }, {
+        text: 'Employment Date',
+        value: 'employment_date'
+      }, {
+        text: 'Staff Positions',
+        value: 'staff_positions'
+      }, {
+        text: 'Gender',
+        value: 'gender'
+      }]
     };
   },
   created: function created() {
@@ -2206,64 +2196,34 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   watch: {
     pagination: {
       handler: function handler() {
-        //TODO:: check it
-        if (this.search.length == 0) this.fetchEmployees();else this.searchMethod();
+        this.fetchEmployees();
       },
       deep: true
-    },
-    search: 'searchMethod'
+    }
   },
   methods: {
     fetchEmployees: function fetchEmployees() {
       var _this = this;
 
-      this.loader = true;
-      fetch('/api/employees?page_size=' + this.pagination.pageSize + '&page=' + this.pagination.current).then(function (res) {
-        return res.json();
+      this.loading = true;
+      var config = {
+        params: {
+          page: this.pagination.page,
+          rowsPerPage: this.pagination.rowsPerPage
+        }
+      };
+      axios.get('/api/employees/', config).then(function (res) {
+        return res.data;
       }).then(function (res) {
-        var _this$employees;
-
-        _this.pagination.current = res.meta.current_page;
-        _this.pagination.last = res.meta.last_page;
-        _this.pagination.total = res.meta.total; //Clear current employees
-
-        _this.employees = [];
-
-        (_this$employees = _this.employees).push.apply(_this$employees, _toConsumableArray(res.data));
+        _this.pagination.lastPage = res.meta.last_page;
+        _this.pagination.totalItems = res.meta.total;
+        _this.employees = res.data;
       }).finally(function () {
-        return _this.loader = false;
+        return _this.loading = false;
       }).catch(function (err) {
         return console.warn(err);
       });
-    },
-    searchMethod: _.debounce(function () {
-      var _this2 = this;
-
-      if (this.search.length > 2) {
-        console.log('send');
-        this.loader = true;
-        fetch('/api/employees/search?key=' + this.search + '&page_size=' + this.pagination.pageSize + '&page=' + this.pagination.current).then(function (res) {
-          return res.json();
-        }).then(function (res) {
-          var _this2$employees;
-
-          _this2.pagination.current = res.meta.current_page;
-          _this2.pagination.last = res.meta.last_page;
-          _this2.pagination.total = res.meta.total; //Get search result
-
-          _this2.employees = [];
-
-          (_this2$employees = _this2.employees).push.apply(_this2$employees, _toConsumableArray(res.data)); //Set back focus on search input
-
-
-          _this2.$refs.search.focus();
-        }).finally(function () {
-          return _this2.loader = false;
-        }).catch(function (err) {
-          return console.warn(err);
-        });
-      }
-    }, 600)
+    }
   }
 });
 
@@ -2302,7 +2262,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['loader']
+  props: ['loading']
 });
 
 /***/ }),
@@ -21792,179 +21752,94 @@ var render = function() {
     "v-container",
     { attrs: { fluid: "", "grid-list-md": "" } },
     [
-      _c("loader", { attrs: { loader: _vm.loader } }),
-      _vm._v(" "),
       _c(
         "v-layout",
         { attrs: { row: "", wrap: "" } },
         [
           _c(
             "v-flex",
-            { attrs: { xs12: "", sm12: "", md6: "", "fill-height": "" } },
+            { attrs: { xs12: "" } },
             [
-              _c("v-pagination", {
-                staticClass: "pt-3",
-                attrs: { length: _vm.pagination.last, "total-visible": "10" },
-                model: {
-                  value: _vm.pagination.current,
-                  callback: function($$v) {
-                    _vm.$set(_vm.pagination, "current", $$v)
-                  },
-                  expression: "pagination.current"
-                }
-              }),
+              _c(
+                "div",
+                { staticClass: "mb-2" },
+                [
+                  _c("v-pagination", {
+                    attrs: {
+                      length: _vm.pagination.lastPage,
+                      "total-visible": 10
+                    },
+                    model: {
+                      value: _vm.pagination.page,
+                      callback: function($$v) {
+                        _vm.$set(_vm.pagination, "page", $$v)
+                      },
+                      expression: "pagination.page"
+                    }
+                  })
+                ],
+                1
+              ),
               _vm._v(" "),
-              _c("div", { staticClass: "caption grey--text ml-2" }, [
-                _vm._v(_vm._s(_vm.pagination.total) + " records")
-              ])
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-flex",
-            { attrs: { xs12: "", sm6: "", md2: "", "offset-md1": "" } },
-            [
-              _c("v-select", {
+              _c("v-data-table", {
+                staticClass: "elevation-1",
                 attrs: {
-                  items: _vm.pagination.pageSizes,
-                  "menu-props": "auto",
-                  label: "Page size",
-                  "prepend-icon": "pages",
-                  hint: "Pick page size",
-                  "persistent-hint": "",
-                  "single-line": ""
+                  headers: _vm.headers,
+                  items: _vm.employees,
+                  "total-items": _vm.pagination.totalItems,
+                  loading: _vm.loading,
+                  "rows-per-page-items": _vm.pagination.rowsPerPageItems,
+                  pagination: _vm.pagination
                 },
-                model: {
-                  value: _vm.pagination.pageSize,
-                  callback: function($$v) {
-                    _vm.$set(_vm.pagination, "pageSize", $$v)
-                  },
-                  expression: "pagination.pageSize"
-                }
-              })
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-flex",
-            { attrs: { xs12: "", sm6: "", md3: "" } },
-            [
-              _c("v-text-field", {
-                ref: "search",
-                attrs: {
-                  label: "Search Algolia",
-                  "append-outer-icon": "search",
-                  hint: "Start typing...",
-                  "persistent-hint": ""
+                on: {
+                  "update:pagination": function($event) {
+                    _vm.pagination = $event
+                  }
                 },
-                model: {
-                  value: _vm.search,
-                  callback: function($$v) {
-                    _vm.search = $$v
-                  },
-                  expression: "search"
-                }
-              })
-            ],
-            1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-layout",
-        { attrs: { row: "", wrap: "" } },
-        _vm._l(_vm.employees, function(employee) {
-          return _c(
-            "v-flex",
-            {
-              key: employee.id,
-              attrs: { xs12: "", sm6: "", md4: "", lg3: "", xl2: "" }
-            },
-            [
-              _c("v-hover", {
                 scopedSlots: _vm._u([
                   {
-                    key: "default",
-                    fn: function(ref) {
-                      var hover = ref.hover
-                      return _c(
-                        "v-card",
-                        {
-                          staticClass: "mx-auto",
-                          class: "elevation-" + (hover ? 12 : 2)
-                        },
-                        [
-                          _c("v-img", {
-                            staticClass: "white--text",
-                            attrs: {
-                              height: "200px",
-                              src:
-                                "https://api.adorable.io/avatars/200/" +
-                                employee.email +
-                                ".png"
-                            }
+                    key: "items",
+                    fn: function(props) {
+                      return [
+                        _c("td", [_vm._v(_vm._s(props.item.name))]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-xs-right" }, [
+                          _vm._v(_vm._s(props.item.department))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-xs-right" }, [
+                          _vm._v(_vm._s(props.item.city))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-xs-right" }, [
+                          _vm._v(_vm._s(props.item.email))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-xs-right" }, [
+                          _vm._v(_vm._s(props.item.salary) + " $")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-xs-right" }, [
+                          _vm._v(_vm._s(props.item.employment_date))
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "td",
+                          { staticClass: "text-xs-right" },
+                          _vm._l(props.item.staff_positions, function(
+                            staffPosition
+                          ) {
+                            return _c("span", [
+                              _vm._v(_vm._s(staffPosition) + " ")
+                            ])
                           }),
-                          _vm._v(" "),
-                          _c("v-card-title", [
-                            _c(
-                              "div",
-                              [
-                                _c("h3", { staticClass: "headline mb-0" }, [
-                                  _vm._v(_vm._s(employee.name))
-                                ]),
-                                _vm._v(" "),
-                                _c("span", { staticClass: "grey--text" }, [
-                                  _vm._v(_vm._s(employee.email))
-                                ]),
-                                _c("br"),
-                                _vm._v(" "),
-                                _c(
-                                  "v-list",
-                                  [
-                                    _c("v-list-tile-title", [
-                                      _c("strong", [_vm._v("Salary:")]),
-                                      _vm._v(
-                                        " " + _vm._s(employee.salary) + " $"
-                                      )
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("v-list-tile-title", [
-                                      _c("strong", [
-                                        _vm._v("Employment Date:")
-                                      ]),
-                                      _vm._v(
-                                        " " + _vm._s(employee.employment_date)
-                                      )
-                                    ]),
-                                    _vm._v(" "),
-                                    _vm._l(employee.staff_positions, function(
-                                      position
-                                    ) {
-                                      return _c(
-                                        "v-list-tile-title",
-                                        { key: position.id },
-                                        [
-                                          _c("strong", [
-                                            _vm._v("Staff positions:")
-                                          ]),
-                                          _vm._v(" " + _vm._s(position))
-                                        ]
-                                      )
-                                    })
-                                  ],
-                                  2
-                                )
-                              ],
-                              1
-                            )
-                          ])
-                        ],
-                        1
-                      )
+                          0
+                        ),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-xs-center" }, [
+                          _vm._v(_vm._s(props.item.gender == "f" ? "F" : "M"))
+                        ])
+                      ]
                     }
                   }
                 ])
@@ -21972,7 +21847,7 @@ var render = function() {
             ],
             1
           )
-        }),
+        ],
         1
       )
     ],
@@ -22006,11 +21881,11 @@ var render = function() {
     {
       attrs: { "hide-overlay": "", persistent: "", width: "300" },
       model: {
-        value: _vm.loader,
+        value: _vm.loading,
         callback: function($$v) {
-          _vm.loader = $$v
+          _vm.loading = $$v
         },
-        expression: "loader"
+        expression: "loading"
       }
     },
     [

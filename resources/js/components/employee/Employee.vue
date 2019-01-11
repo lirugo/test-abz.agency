@@ -167,7 +167,7 @@
         },
         methods: {
             async fetchEmployees (item) {
-                return fetch('/api/employees?sort=catalog')
+                return fetch('/api/employees/catalog')
                     .then(res => res.json())
                     .then(res => res.data)
                     .then(json => item.children.push(...json))

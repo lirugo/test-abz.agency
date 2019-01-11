@@ -4,30 +4,9 @@ namespace App\Models\Employee;
 
 use App\Models\GEO\Department;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Scout\Searchable;
 
 class Employee extends Model
 {
-    use Searchable;
-
-    /**
-     * Get the indexable data array for the model.
-     *
-     * @return array
-     */
-    public function toSearchableArray()
-    {
-        return [
-            'name' => $this->name->first.' '.$this->name->middle.' '.$this->name->last,
-            'department' => $this->department->name,
-            'city' => $this->department->city->name,
-            'email' => $this->email,
-            'salary' => $this->getTotalSalary(),
-            'employment_date' => $this->employment_date,
-            'staff_positions' => $this->arrayStaffPositions(),
-        ];
-    }
-
     public function name()
     {
         return $this->hasOne(Name::class);

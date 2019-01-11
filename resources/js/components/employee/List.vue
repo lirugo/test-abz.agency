@@ -1,69 +1,39 @@
 <template>
     <v-container fluid grid-list-md>
-        <!--Loader-->
-        <loader :loader="loader"></loader>
-        <!--Pagination-->
-        <v-layout row wrap>
-            <v-flex xs12 sm12 md6 fill-height>
-                <v-pagination
-                        class="pt-3"
-                        v-model="pagination.current"
-                        :length="pagination.last"
-                        total-visible="10"/>
-                <div class="caption grey--text ml-2">{{ pagination.total }} records</div>
-            </v-flex>
-            <v-flex xs12 sm6 md2 offset-md1>
-                <v-select
-                        :items="pagination.pageSizes"
-                        v-model="pagination.pageSize"
-                        menu-props="auto"
-                        label="Page size"
-                        prepend-icon="pages"
-                        hint="Pick page size"
-                        persistent-hint
-                        single-line
-                ></v-select>
-            </v-flex>
-            <v-flex xs12 sm6 md3>
-                <v-text-field
-                        v-model="search"
-                        ref="search"
-                        label="Search Algolia"
-                        append-outer-icon="search"
-                        hint="Start typing..."
-                        persistent-hint
-                ></v-text-field>
-            </v-flex>
-        </v-layout>
         <!--Employee list-->
         <v-layout row wrap>
-            <v-flex xs12 sm6 md4 lg3 xl2  v-for="employee in employees" :key="employee.id">
-                <!--Employee card-->
-                <v-hover>
-                    <v-card
-                            slot-scope="{ hover }"
-                            :class="`elevation-${hover ? 12 : 2}`"
-                            class="mx-auto"
-                    >
-                        <v-img
-                                class="white--text"
-                                height="200px"
-                                :src="'https://api.adorable.io/avatars/200/' + employee.email + '.png'"
-                        >
-                        </v-img>
-                        <v-card-title>
-                            <div>
-                                <h3 class="headline mb-0">{{employee.name}}</h3>
-                                <span class="grey--text">{{employee.email}}</span><br>
-                                <v-list>
-                                    <v-list-tile-title><strong>Salary:</strong> {{employee.salary}} $</v-list-tile-title>
-                                    <v-list-tile-title><strong>Employment Date:</strong> {{employee.employment_date}}</v-list-tile-title>
-                                    <v-list-tile-title v-for="position in employee.staff_positions" :key="position.id"><strong>Staff positions:</strong> {{position}}</v-list-tile-title>
-                                </v-list>
-                            </div>
-                        </v-card-title>
-                    </v-card>
-                </v-hover>
+            <v-flex xs12>
+                <!--External pagination-->
+                <div class="mb-2">
+                    <v-pagination
+                            v-model="pagination.page"
+                            :length="pagination.lastPage"
+                            :total-visible="10"
+                    ></v-pagination>
+                </div>
+                <!--Table-->
+                <v-data-table
+                        :headers="headers"
+                        :items="employees"
+                        :total-items="pagination.totalItems"
+                        :loading="loading"
+                        :rows-per-page-items="pagination.rowsPerPageItems"
+                        class="elevation-1"
+                        :pagination.sync="pagination"
+                >
+                    <template slot="items" slot-scope="props">
+                        <td>{{ props.item.name }}</td>
+                        <td class="text-xs-right">{{ props.item.department }}</td>
+                        <td class="text-xs-right">{{ props.item.city }}</td>
+                        <td class="text-xs-right">{{ props.item.email }}</td>
+                        <td class="text-xs-right">{{ props.item.salary }} $</td>
+                        <td class="text-xs-right">{{ props.item.employment_date }}</td>
+                        <td class="text-xs-right">
+                            <span v-for="staffPosition in props.item.staff_positions">{{staffPosition}} </span>
+                        </td>
+                        <td class="text-xs-center">{{ props.item.gender == 'f' ? 'F' : 'M' }}</td>
+                    </template>
+                </v-data-table>
             </v-flex>
         </v-layout>
     </v-container>
@@ -73,16 +43,32 @@
     export default {
         data(){
             return {
-                loader: true,
+                loading: true,
                 pagination: {
-                    current: 1,
-                    last: 1,
-                    total: 0,
-                    pageSize: 10,
-                    pageSizes: [5,10,20,50,100],
+                    descending: false,
+                    page: 1,
+                    lastPage: 1,
+                    rowsPerPage: 10,
+                    rowsPerPageItems: [5,10,20],
+                    sortBy: '',
+                    totalItems: 0,
                 },
-                search: '',
                 employees: [],
+                headers: [
+                    {
+                        text: 'Name',
+                        align: 'left',
+                        sortable: false,
+                        value: 'name'
+                    },
+                    { text: 'Department', value: 'department' },
+                    { text: 'City', value: 'city' },
+                    { text: 'Email', value: 'email' },
+                    { text: 'Salary', value: 'salary' },
+                    { text: 'Employment Date', value: 'employment_date' },
+                    { text: 'Staff Positions', value: 'staff_positions' },
+                    { text: 'Gender', value: 'gender' },
+                ],
             }
         },
         created() {
@@ -90,56 +76,33 @@
         },
         watch: {
             pagination: {
-                handler(){
-                    //TODO:: check it
-                    if(this.search.length == 0)
-                        this.fetchEmployees()
-                    else this.searchMethod()
+                handler () {
+                    this.fetchEmployees()
                 },
                 deep: true
-            },
-            search: 'searchMethod'
+            }
         },
         methods: {
             fetchEmployees(){
-                this.loader = true
-                fetch('/api/employees?page_size=' + this.pagination.pageSize + '&page=' + this.pagination.current)
-                    .then(res => res.json())
+                this.loading = true
+                let config = {
+                    params: {
+                        page: this.pagination.page,
+                        rowsPerPage: this.pagination.rowsPerPage,
+                    },
+                }
+                axios.get('/api/employees/', config)
+                    .then(res => res.data)
                     .then(res => {
-                        this.pagination.current = res.meta.current_page
-                        this.pagination.last = res.meta.last_page
-                        this.pagination.total = res.meta.total
-                        //Clear current employees
-                        this.employees = []
-                        this.employees.push(...res.data)
+                        this.pagination.lastPage = res.meta.last_page
+                        this.pagination.totalItems = res.meta.total
+                        this.employees = res.data
                     })
                     .finally(() => (
-                        this.loader = false
+                        this.loading = false
                     ))
                     .catch(err => console.warn(err))
             },
-            searchMethod: _.debounce(function(){
-                if (this.search.length > 2){
-                    console.log('send')
-                    this.loader = true
-                    fetch('/api/employees/search?key=' + this.search + '&page_size=' + this.pagination.pageSize + '&page=' + this.pagination.current)
-                        .then(res => res.json())
-                        .then(res => {
-                            this.pagination.current = res.meta.current_page
-                            this.pagination.last = res.meta.last_page
-                            this.pagination.total = res.meta.total
-                            //Get search result
-                            this.employees = []
-                            this.employees.push(...res.data)
-                            //Set back focus on search input
-                            this.$refs.search.focus()
-                        })
-                        .finally(() => (
-                            this.loader = false
-                        ))
-                        .catch(err => console.warn(err))
-                }
-            }, 600)
         },
     }
 </script>

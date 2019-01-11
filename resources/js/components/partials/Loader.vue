@@ -1,6 +1,6 @@
 <template>
     <v-dialog
-            v-model="loader"
+            v-model="loading"
             hide-overlay
             persistent
             width="300"
@@ -23,6 +23,6 @@
 
 <script>
     export default {
-        props: ['loader'],
+        props: ['loading'],
     }
 </script>
