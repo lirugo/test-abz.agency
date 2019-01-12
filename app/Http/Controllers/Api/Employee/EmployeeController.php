@@ -44,6 +44,44 @@ class EmployeeController extends Controller
         return new EmployeeCollection($employees);
     }
 
+    public function search(){
+        //Get sort params
+        $pageSize = Input::get('rowsPerPage');
+        $data = Input::get('data');
+
+        //Searching
+        $employees = Employee::
+            where('email', 'LIKE', "%{$data}%")
+            ->orWhere('salary', 'LIKE', "%{$data}%")
+            ->orWhere('employment_date', 'LIKE', "%{$data}%")
+            ->orWhere('gender', 'LIKE', "%{$data}%")
+            ->orWhereHas('name', function ($query) use ($data) {
+                $query->where([
+                    ['first', 'LIKE', "%{$data}%"],
+                    ['middle', 'LIKE', "%{$data}%"],
+                    ['last', 'LIKE', "%{$data}%"],
+                ]);
+            })
+            ->orWhereHas('department', function ($query) use ($data) {
+                $query->where([
+                    ['name', 'LIKE', "%{$data}%"],
+                ]);
+            })
+            ->orWhereHas('department.city', function ($query) use ($data) {
+                $query->where([
+                    ['name', 'LIKE', "%{$data}%"],
+                ]);
+            })
+            ->orWhereHas('staffPositions', function ($query) use ($data) {
+                $query->where([
+                    ['name', 'LIKE', "%{$data}%"],
+                ]);
+            })
+            ->paginate($pageSize);
+
+        return new EmployeeCollection($employees);
+    }
+
     public function catalog(){
         $macroRegions = MacroRegionResource::collection(MacroRegion::orderBy('id')->get());
         return $macroRegions;
