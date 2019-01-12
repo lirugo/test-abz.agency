@@ -2164,11 +2164,10 @@ __webpack_require__.r(__webpack_exports__);
       headers: [{
         text: 'Name',
         align: 'left',
-        sortable: false,
-        value: 'name'
+        value: 'first_name'
       }, {
         text: 'Department',
-        value: 'department'
+        value: 'dep'
       }, {
         text: 'City',
         value: 'city'
@@ -2177,7 +2176,7 @@ __webpack_require__.r(__webpack_exports__);
         value: 'email'
       }, {
         text: 'Salary',
-        value: 'salary'
+        value: 'getSalary'
       }, {
         text: 'Employment Date',
         value: 'employment_date'
@@ -2209,7 +2208,9 @@ __webpack_require__.r(__webpack_exports__);
       var config = {
         params: {
           page: this.pagination.page,
-          rowsPerPage: this.pagination.rowsPerPage
+          rowsPerPage: this.pagination.rowsPerPage,
+          sortBy: this.pagination.sortBy,
+          descending: this.pagination.descending
         }
       };
       axios.get('/api/employees/', config).then(function (res) {

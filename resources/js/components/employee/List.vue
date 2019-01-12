@@ -58,13 +58,12 @@
                     {
                         text: 'Name',
                         align: 'left',
-                        sortable: false,
-                        value: 'name'
+                        value: 'first_name'
                     },
-                    { text: 'Department', value: 'department' },
+                    { text: 'Department', value: 'dep' },
                     { text: 'City', value: 'city' },
                     { text: 'Email', value: 'email' },
-                    { text: 'Salary', value: 'salary' },
+                    { text: 'Salary', value: 'getSalary' },
                     { text: 'Employment Date', value: 'employment_date' },
                     { text: 'Staff Positions', value: 'staff_positions' },
                     { text: 'Gender', value: 'gender' },
@@ -89,6 +88,8 @@
                     params: {
                         page: this.pagination.page,
                         rowsPerPage: this.pagination.rowsPerPage,
+                        sortBy: this.pagination.sortBy,
+                        descending: this.pagination.descending,
                     },
                 }
                 axios.get('/api/employees/', config)
